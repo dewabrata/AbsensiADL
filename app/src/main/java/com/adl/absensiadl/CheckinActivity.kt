@@ -79,7 +79,14 @@ class CheckinActivity : AppCompatActivity() {
 
         btnCheckIn.setOnClickListener({
             if(status.equals("")){
-                checkin()
+                if(btnCheckIn.text.toString().equals("Done")){
+                    val intent : Intent = Intent(applicationContext,MainMenu::class.java)
+                    startActivity(intent)
+                    finish()
+
+                }else {
+                    checkin()
+                }
             }else{
                 checkout()
             }
@@ -130,6 +137,8 @@ class CheckinActivity : AppCompatActivity() {
                             Toast.LENGTH_LONG
                         ).show()
 
+                        photo.setImageResource(R.drawable.ok)
+
                         if(!isstatus) {
                             val editor: SharedPreferences.Editor =
                                 getSharedPreferences("absen", Context.MODE_PRIVATE).edit()
@@ -144,11 +153,14 @@ class CheckinActivity : AppCompatActivity() {
 
                     override fun onFailure(call: Call<ResponsePostData>, t: Throwable) {
                         Log.e("error post data", t.localizedMessage.toString())
+                        photo.setImageResource(R.drawable.close)
+                        btnCheckIn.setText("RE-UPLOAD")
                     }
 
                 }
             )
         }else{
+
             Toast.makeText(
                 this@CheckinActivity, "Error load username",
                 Toast.LENGTH_LONG).show()
@@ -227,9 +239,8 @@ class CheckinActivity : AppCompatActivity() {
                     editor.putString("id",response.body()?.data?.tblAbsen?.get(0)?.id)
                     editor.apply()
 
-                    val intent : Intent = Intent(applicationContext,MainMenu::class.java)
-                    startActivity(intent)
-                    finish()
+                btnCheckIn.setText("Done")
+
 
 
             }
